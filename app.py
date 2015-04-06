@@ -69,7 +69,7 @@ def create_and_send_email(send_to, api_key):
 
 @app.route('/')
 def index():
-    return ''
+    return render_template("index.html"), 200
 
 @app.route('/register')
 def register():
@@ -78,19 +78,22 @@ def register():
     u = models.User(key=key, requests=5000)
     db.session.add(u)
     db.session.commit()
-    return 'Sent', 200
+    return render_template("signup.html", key=key), 200
 
 @app.route('/sleep/<int:ti>/<string:key>')
 def sleep(ti, key):
     if ti > 60:
         return 'SaaS only supports sleeps up to a minute', 422
-    if models.User.query.filter_by(key=unicode(key)).first() is not None:
+    user = models.User.query.filter_by(key=unicode(key)).first()
+    if user is not None:
         time.sleep(ti)
+        user.requests -= 1
+        db.session.commit()
         return '', 200
     else:
         return '', 401
 
-dev = False
+dev = True
 host = '127.0.0.1' if dev else '0.0.0.0'
 port = int(os.environ.get("PORT", 5000))
 if __name__ == '__main__':
