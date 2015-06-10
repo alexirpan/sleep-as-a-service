@@ -1,1 +1,1 @@
-web: ./ruh.sh
+web: ./run.sh
