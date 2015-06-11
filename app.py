@@ -95,7 +95,7 @@ def sleep(ti, key):
         
 @app.route('/sailthru')
 def sailthru():
-    return request.json
+    print request.json
 
 dev = False
 host = '127.0.0.1' if dev else '0.0.0.0'
